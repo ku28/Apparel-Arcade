@@ -4,7 +4,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
-import path from 'path';
+import { extname } from 'path';
 import cors from 'cors';
 
 const port = 4000;
@@ -17,9 +17,9 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 const storage = multer.diskStorage({
   destination: './upload/images',
-  filename: (req, file, cb) => {
+  filename: (file, cb) => {
     console.log(file);
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+    return cb(null, `${file.fieldname}_${Date.now()}${extname(file.originalname)}`)
   }
 });
 const upload = multer({ storage: storage });
@@ -101,7 +101,7 @@ const Product = mongoose.model("Product", {
   },
 });
 
-app.get("/", (req, res) => {
+app.get("/", (res) => {
   res.send("Root");
 });
 
@@ -160,20 +160,20 @@ app.post('/signup', async (req, res) => {
   res.json({ success, token });
 });
 
-app.get("/allproducts", async (req, res) => {
+app.get("/allproducts", async (res) => {
   let products = await Product.find({});
   console.log("All Products");
   res.send(products);
 });
 
-app.get("/newcollections", async (req, res) => {
+app.get("/newcollections", async (res) => {
   let products = await Product.find({});
   let arr = products.slice(1).slice(-8);
   console.log("New Collections");
   res.send(arr);
 });
 
-app.get("/popularinwomen", async (req, res) => {
+app.get("/popularinwomen", async (res) => {
   let products = await Product.find({});
   let arr = products.splice(0, 4);
   console.log("Popular In Women");
@@ -232,7 +232,7 @@ app.post("/addproduct", async (req, res) => {
 });
 
 app.post("/removeproduct", async (req, res) => {
-  const product = await Product.findOneAndDelete({ id: req.body.id });
+  await Product.findOneAndDelete({ id: req.body.id });
   console.log("Removed");
   res.json({ success: true, name: req.body.name });
 });
