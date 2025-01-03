@@ -8,6 +8,8 @@ const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
 
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
 app.use(express.json());
 app.use(cors());
 
@@ -28,7 +30,7 @@ const upload = multer({storage: storage})
 app.post("/upload", upload.single('product'), (req, res) => {
   res.json({
     success: 1,
-    image_url: `http://localhost:4000/images/${req.file.filename}`
+    image_url: `${baseURL}/images/${req.file.filename}`
   })
 })
 app.use('/images', express.static('upload/images'));
