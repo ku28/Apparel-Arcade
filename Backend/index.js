@@ -1,12 +1,20 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 const port = 4000;
-const express = require("express");
+import express from 'express';
 const app = express();
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const multer = require("multer");
-const path = require("path");
-const cors = require("cors");
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import cors from 'cors';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 app.use(express.json());
 app.use(cors());
@@ -16,21 +24,21 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 // paste your mongoDB Connection string above with password
 // password should not contain '@' special character
 
-//Image Storage Engine 
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => {
-    console.log(file);
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-  }
-})
-const upload = multer({storage: storage})
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'ApparelArcade',
+    allowed_formats: ['jpg', 'jpeg', 'png'], // Restrict allowed file types
+  },
+});
+
+const upload = multer({ storage });
 app.post("/upload", upload.single('product'), (req, res) => {
   res.json({
     success: 1,
-    image_url: `http://localhost:4000/images/${req.file.filename}`
-  })
-})
+    image_url: req.file.path,
+  });
+});
 app.use('/images', express.static('upload/images'));
 
 // MiddleWare to fetch user from database
@@ -104,7 +112,7 @@ const Product = mongoose.model("Product", {
   },
 });
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Root");
 });
 
@@ -165,20 +173,20 @@ app.post('/signup', async (req, res) => {
     res.json({ success, token })
   })
 
-app.get("/allproducts", async (req, res) => {
+app.get("/allproducts", async (_, res) => {
   let products = await Product.find({});
   console.log("All Products");
   res.send(products);
 });
 
-app.get("/newcollections", async (req, res) => {
+app.get("/newcollections", async (_, res) => {
   let products = await Product.find({});
   let arr = products.slice(1).slice(-8);
   console.log("New Collections");
   res.send(arr);
 });
 
-app.get("/popularinwomen", async (req, res) => {
+app.get("/popularinwomen", async (_, res) => {
   let products = await Product.find({});
   let arr = products.splice(0,  4);
   console.log("Popular In Women");
@@ -240,7 +248,7 @@ app.post("/addproduct", async (req, res) => {
 });
 
 app.post("/removeproduct", async (req, res) => {
-  const product = await Product.findOneAndDelete({ id: req.body.id });
+  await Product.findOneAndDelete({ id: req.body.id });
   console.log("Removed");
   res.json({success:true,name:req.body.name})
 });
