@@ -1,13 +1,30 @@
-How to run this project (Apparel Arcade)
+# How to Run This Project (Apparel Arcade)
 
-1. Open "Database" in Visual Studio Code
-2. run "npm i"
-3. run "node .\index.js"
-4. Open "Admin" in Visual Studio Code
-5. run "npm i"
-6. run "npm start"
-7. Add the products or check the product list
-8. Open "Website" in Visual Studio Code
-9. run "npm i"
-10. run "npm start"
-11. Have a look at the website!
+## Backend
+1. Open the `Backend` folder in Visual Studio Code.
+2. Install dependencies:
+   ```bash
+   npm install
+3. Start the backend server:
+   ```bash
+   node .\index.js
+
+## Admin Panel
+4. Open the `Admin` folder in Visual Studio Code.
+5. Install dependencies:
+   ```bash
+   npm install
+6. Start the admin panel:
+   ```bash
+   npm start
+7. Add products or check the product list.
+
+## Website
+8. Open the `Website` folder in Visual Studio Code.
+9. Install dependencies:
+   ```bash
+   npm install
+10. Start the admin panel:
+   ```bash
+   npm start
+11. Explore the website and interact with the application.
