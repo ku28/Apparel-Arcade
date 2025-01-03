@@ -15,7 +15,7 @@ const ListProduct = () => {
 
   useEffect(() => {
     fetchInfo();
-  }, []);
+  }, [fetchInfo]);
 
   const removeProduct = async (id) => {
     await fetch(`${baseURL}/removeproduct`, {

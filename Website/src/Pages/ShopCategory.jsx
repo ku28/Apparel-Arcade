@@ -7,19 +7,19 @@ import { Link } from "react-router-dom";
 const ShopCategory = (props) => {
 
   const [allproducts, setAllProducts] = useState([]);
+  const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
-  const fetchInfo = () => { 
-    fetch('http://localhost:4000/allproducts') 
-            .then((res) => res.json()) 
-            .then((data) => setAllProducts(data))
+  useEffect(() => {
+    const fetchInfo = () => { 
+      fetch(`${baseURL}/allproducts`) 
+              .then((res) => res.json()) 
+              .then((data) => setAllProducts(data))
     }
-
-    useEffect(() => {
-      fetchInfo();
-    }, [])
+    fetchInfo();
+  }, [baseURL])
     
   return (
-    <div className="shopcategory">
+    <div className="shopcategory</div>">
       <img src={props.banner} className="shopcategory-banner" alt="" />
       <div className="shopcategory-indexSort">
         <p><span>Showing 1 - 12</span> out of 54 Products</p>

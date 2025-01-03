@@ -10,19 +10,20 @@ const Shop = () => {
   const [popular, setPopular] = useState([]);
   const [newcollection, setNewCollection] = useState([]);
 
-  const fetchInfo = () => { 
-    fetch('http://localhost:4000/popularinwomen') 
-            .then((res) => res.json()) 
-            .then((data) => setPopular(data))
-    fetch('http://localhost:4000/newcollections') 
-            .then((res) => res.json()) 
-            .then((data) => setNewCollection(data))
+  const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
+  useEffect(() => {
+    const fetchInfo = () => { 
+      fetch(`${baseURL}/popularinwomen`) 
+              .then((res) => res.json()) 
+              .then((data) => setPopular(data))
+      fetch(`${baseURL}/newcollections`) 
+              .then((res) => res.json()) 
+              .then((data) => setNewCollection(data))
     }
 
-    useEffect(() => {
-      fetchInfo();
-    }, [])
-
+    fetchInfo();
+  }, [baseURL])
 
   return (
     <div>
